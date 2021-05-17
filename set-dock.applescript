@@ -2,6 +2,7 @@
 
 -- Applications will be added in the order they appear in this list.
 -- Use full POSIX pathnames
+-- Any application that is not installed will be skipped and not added to the Dock.
 set ApplicationsToAdd to {"/Applications/App Store.app", ¬
 	"/Applications/BBEdit.app", ¬
 	"/Applications/Google Chrome.app", ¬
