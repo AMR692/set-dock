@@ -12,6 +12,11 @@ set ApplicationsToAdd to {"/Applications/App Store.app", ¬
 	"/Applications/System Preferences.app", ¬
 	"/System/Applications/System Preferences.app"}
 
+on PostDockTasks()
+	-- add any code here that you would like to get done after the Dock has been set,
+	-- but before the new Dock has been displayed.
+end PostDockTasks
+
 -- This is a list of folders (full POSIX pathnames) that will be added to the right side
 -- of the Dock. Again, use full POSIX pathnames
 set FoldersToAdd to {POSIX path of (path to applications folder), POSIX path of (path to downloads folder)}
@@ -72,6 +77,8 @@ end repeat
 repeat with i in FoldersToAdd
 	do shell script "defaults write com.apple.dock persistent-others -array-add '<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>" & i & "</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>'"
 end repeat
+
+PostDockTasks()
 
 do shell script "pkill cfprefsd" with administrator privileges
 do shell script "pkill Dock" with administrator privileges
