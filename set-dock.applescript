@@ -1,4 +1,4 @@
-#!/usr/bin/osascript
+#!/usr/bin/env osascript
 
 -- Applications will be added in the order they appear in this list.
 -- Use full POSIX pathnames
@@ -12,14 +12,14 @@ set ApplicationsToAdd to {"/Applications/App Store.app", ¬
 	"/Applications/System Preferences.app", ¬
 	"/System/Applications/System Preferences.app"}
 
+-- This is a list of folders (full POSIX pathnames) that will be added to the right side
+-- of the Dock.
+set FoldersToAdd to {POSIX path of (path to applications folder), POSIX path of (path to downloads folder)}
+
 on PostDockTasks()
 	-- add any code here that you would like to get done after the Dock has been set,
 	-- but before the new Dock has been displayed.
 end PostDockTasks
-
--- This is a list of folders (full POSIX pathnames) that will be added to the right side
--- of the Dock. Again, use full POSIX pathnames
-set FoldersToAdd to {POSIX path of (path to applications folder), POSIX path of (path to downloads folder)}
 
 (* *** No need to change anything beneath this line *** *)
 try
@@ -59,6 +59,9 @@ do shell script "cp ~/Library/Preferences/com.apple.dock.plist ~/Library/Prefere
 do shell script "defaults write com.apple.dock persistent-apps -array '{}'"
 do shell script "defaults write com.apple.dock persistent-others -array '{}'"
 
+-- add requested items to Dock
+-- first, the applications
+-- check to see if the file exists before marking it to add to dock
 set ApplicationsAvailable to {}
 repeat with i in ApplicationsToAdd
 	tell application "System Events"
@@ -70,10 +73,12 @@ repeat with i in ApplicationsToAdd
 	end tell
 end repeat
 
+-- now actually add them to the dock
 repeat with i in ApplicationsAvailable
 	do shell script "defaults write com.apple.dock persistent-apps -array-add " & (i as string)
 end repeat
 
+-- Now add the folders
 repeat with i in FoldersToAdd
 	do shell script "defaults write com.apple.dock persistent-others -array-add '<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>" & i & "</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>'"
 end repeat
